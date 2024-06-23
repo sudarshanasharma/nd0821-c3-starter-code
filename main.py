@@ -1,22 +1,17 @@
 from fastapi import FastAPI, Body, Response, status
-from pydantic import BaseModel
-from ml.model import load_model, single_prediction
-from ml.data import process_data
-# from ml.clean_data import basic_cleaning
+from contextlib import asynccontextmanager
+from ml.model import load_model, predict_single
 import logging
 from pydantic import BaseModel
 import os
 
 logging.basicConfig(level=logging.INFO)
-
+MODEL_PATH ="./model"
 if "DYNO" in os.environ and os.path.isdir(".dvc"):
     os.system("dvc config core.no_scm true")
     if os.system("dvc pull") != 0:
         exit("dvc pull failed")
     os.system("rm -r .dvc .apt/usr/lib/dvc")
-
-app = FastAPI()
-
 
 class Data(BaseModel):
     workclass: str = None
@@ -35,7 +30,7 @@ class Data(BaseModel):
     hours_per_week: int
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "workclass": "state_gov",
                 "education": "bachelors",
@@ -54,13 +49,26 @@ class Data(BaseModel):
             }
         }
 
-
-@app.on_event("startup")
-async def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     logging.info("Loading model")
     global model, encoder, lb
-    model, encoder, lb = load_model('./model')
+    # if the model exists, load the model
+    print(os.path.isfile(os.path.join(MODEL_PATH,'model.pkl')))
+    if os.path.isfile(os.path.join(MODEL_PATH,'model.pkl')):
+        model, encoder, lb = load_model(MODEL_PATH)
     logging.info("Model loaded")
+    yield
+
+# Instantiate the app.
+app = FastAPI(lifespan=lifespan)
+
+#@app.on_event("startup")
+#async def startup_event():
+#    logging.info("Loading model")
+#    global model, encoder, lb
+#    model, encoder, lb = load_model('./model')
+#    logging.info("Model loaded")
 
 
 # welcome message on the root
@@ -68,7 +76,7 @@ async def startup_event():
 def read_root():
     response = Response(
         status_code=status.HTTP_200_OK,
-        content="Welcome to the Adult Income Prediction API"
+        content="Welcome to Udacity Income Prediction API"
     )
     return response
 
@@ -78,9 +86,6 @@ def read_root():
 def predict(data: Data):
     # if any data same as example, return error
     logging.info(f"data dict: {data.dict().values()}")
-    # if any(data.dict().values()) == None OR any(data.dict().values()) == ""
-    # or any(data.dict().values()) == "string" or any(data.dict().values()) ==
-    # 0:
 
     # Check if any string data is missing:
     if 'string' in data.dict().values():
@@ -92,9 +97,7 @@ def predict(data: Data):
 
     else:
         logging.info("Model inference started")
-
-        # predict
-        y_pred = single_prediction(data, './model')
+        y_pred = predict_single(data, MODEL_PATH)
         logging.info("Prediction completed")
 
         response = Response(

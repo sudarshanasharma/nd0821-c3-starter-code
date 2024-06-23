@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
-from ml.data import basic_cleaning, process_data
+from ml.data import process_data, clean_data
 
 logging.basicConfig(level=logging.INFO)
 
@@ -122,27 +122,26 @@ def save_model(model, path, encoder=None, labeler=None):
         pickle.dump(labeler, open(os.path.join(path, 'labeler.pkl'), 'wb'))
 
 
-def load_model(model_path, encoder_path, labeler_path):
+def load_model(model_dir):
     """
     Load a previously saved machine learning model object,
     encoder object, and labeler object.
 
     Inputs
     ------
-    model_path : str
+    model_dir : str
         The file path to load the saved model from.
-    encoder_path : str
-        The file path to load the saved encoder object from.
-    labeler_path : str
-        The file path to load the saved labeler object from.
 
     Returns:
         tuple: A tuple containing the loaded model object, encoder object, and labeler object.
     """
+    model_path = os.path.join(model_dir,'model.pkl')
     model = pickle.load(open(model_path, 'rb'))
 
+    encoder_path = os.path.join(model_dir,'encoder.pkl')
     encoder = pickle.load(open(encoder_path, 'rb'))
 
+    labeler_path = os.path.join(model_dir,'labeler.pkl')
     lb = pickle.load(open(labeler_path, 'rb'))
 
     return model, encoder, lb
@@ -204,7 +203,7 @@ def compute_slice_metrics(
             f.write("\n")
     return slice_metrics
 
-def single_prediction(input_json, model_dir):
+def predict_single(input_json, model_dir):
     """ Make a prediction using a trained model.
 
     Inputs
@@ -223,7 +222,7 @@ def single_prediction(input_json, model_dir):
     logging.info(f"input_df: {input_df}")
 
     # clean data
-    cleaned_df, cat_cols, num_cols = basic_cleaning(
+    cleaned_df, cat_cols, num_cols = clean_data(
         input_df, "data/census_cleaned.csv", "salary", test=True)
 
     # load model, encoder, and lb and predict on single json instance

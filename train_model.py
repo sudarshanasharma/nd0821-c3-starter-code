@@ -24,7 +24,7 @@ def main():
     data = pd.read_csv("data/census.csv")
 
     # Clean data
-    cleaned_data, cat_cols, num_cols = basic_cleaning(
+    cleaned_data, cat_cols, num_cols = clean_data(
         data, "data/census_cleaned.csv", "salary")
 
     # split data into train and test
@@ -50,10 +50,7 @@ def main():
     # if the model exists, load the model
     if os.path.isfile(os.path.join(MODEL_PATH, 'model.pkl')):
         logging.info(f"A model already exists...")
-        model_path = os.path.join(MODEL_PATH, 'model.pkl')
-        encoder_path = os.path.join(MODEL_PATH, 'encoder.pkl')
-        labeler_path = os.path.join(MODEL_PATH, 'labeler.pkl')
-        model, encoder, lb = load_model(model_path, encoder_path, labeler_path)
+        model, encoder, lb = load_model(MODEL_PATH)
         logging.info(f"model, encoder and labeler loaded")
 
     else:

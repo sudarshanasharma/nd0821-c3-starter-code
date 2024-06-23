@@ -1,5 +1,4 @@
 from ml.model import train_model, compute_model_metrics, inference, predict_single
-from ml.clean_data import basic_cleaning
 from ml.model import load_model
 from ml.data import process_data
 import pandas as pd
@@ -29,7 +28,7 @@ def single_prediction(input_json, model_dir):
     logging.info(f"input_df: {input_df}")
 
     # clean data
-    cleaned_df, cat_cols, num_cols = basic_cleaning(
+    cleaned_df, cat_cols, num_cols = clean_data(
         input_df, "data/census_cleaned.csv", "salary", test=True)
 
     # load model, encoder, and lb and predict on single json instance

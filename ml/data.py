@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def basic_cleaning(df, output_path, target, test=False):
+def clean_data(df, output_path, target, test=False):
     '''
     Basic cleaning of data
     '''
