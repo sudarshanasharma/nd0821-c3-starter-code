@@ -58,7 +58,7 @@ def main():
 
     else:
         logging.info(f"A model does not exist... finding the best model...")
-        model = train_model(X_train, y_train, grid_search=True)
+        model = train_model(X_train, y_train)
         save_model(model, MODEL_PATH, encoder, lb)
         logging.info(f"Best model saved")
 
