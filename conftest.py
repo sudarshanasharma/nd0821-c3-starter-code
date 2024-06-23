@@ -6,6 +6,15 @@ import os
 
 from ml.data import process_data
 
+@pytest.fixture(scope='session')
+def raw_data():
+    print(os.getcwd())
+    data_path = "data/census.csv"
+    df = pd.read_csv(data_path)
+    print(df)
+    return df
+
+
 
 @pytest.fixture(scope='session')
 def data():
@@ -33,6 +42,20 @@ def cat_features():
                     "native-country"]
     return cat_features
 
+@pytest.fixture(scope="session")
+def num_features():
+    """
+    Fixture - will return the categorical features as argument
+    """
+    num_features = [
+        "age",
+        "fnlgt",
+        "education-num",
+        'capital-gain',
+        'capital-loss',
+        'hours-per-week'
+    ]
+    return num_features
 
 @pytest.fixture(scope="session")
 def features():
@@ -63,7 +86,6 @@ def model():
 
     model_path = 'model/model.pkl'
     model = pickle.load(open(model_path, 'rb'))
-
     return model
 
 
