@@ -38,6 +38,7 @@ jobs:
       uses: iterative/setup-dvc@v2
     - name: dvc pull
       run: |
+        dvc config core.no_scm true
         dvc remote add -df  datastore s3://udacity-sudarshana-mlops-4
         dvc pull
     - name: Lint with flake8
