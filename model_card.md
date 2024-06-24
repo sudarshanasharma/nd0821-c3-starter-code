@@ -3,7 +3,7 @@
 For additional information see the Model Card paper: https://arxiv.org/pdf/1810.03993.pdf
 
 ## Model Details
-Mahesh Sinha created this Model. It is a Random Forest Classifier model trained on census data.
+Sudarshana Sharma created this Model. It is a Random Forest Classifier model trained on census data.
 
 ## Intended Use
 This model predicts whether a person earns over 50k or not based on the census data.
@@ -34,8 +34,7 @@ Sample observation:
 ## Evaluation Data
 Evaluation data is the 20% of full downloaded data by using `train_test_split` function from scikit-learn.
 Model has been evaluated by *fbeta*, *precision* and *recall* scores. And the score on Evaluation data is below:
-`Precision: 0.7250187828700225, Recall: 0.619781631342325, Fbeta: 0.6682825484764543`
-
+`Precision: 0.7352281226626777, Recall: 0.6269132653061225, Fbeta: 0.6767641996557661`
 ## Ethical Considerations
 This model is trained on census data. The model is not biased towards any particular group of people.
 
