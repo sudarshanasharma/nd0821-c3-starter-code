@@ -1,8 +1,7 @@
-from ml.model import train_model, compute_model_metrics, inference, predict_single
+from ml.model import inference, predict_single
 from ml.model import load_model
-from ml.data import process_data
+from ml.data import process_data, clean_data
 import pandas as pd
-import numpy as np
 import logging
 
 logging.basicConfig(level=logging.INFO)
