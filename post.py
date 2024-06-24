@@ -16,7 +16,7 @@ sample_dict = {'workclass': 'state_gov',
                'capital_loss': 0,
                'hours_per_week': 40
                }
-url = "https://udacity-c3-project.herokuapp.com/predict"
+url = "https://udacity-ssharma-income-predict-5eaa88cf7b4f.herokuapp.com/predict"
 post_response = requests.post(url, json=sample_dict)
-print(post_response.status_code)
-print(post_response.content)
+print(f"Status Code: {post_response.status_code}")
+print(f"Model Inference: {post_response.content}")
