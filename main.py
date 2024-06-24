@@ -1,3 +1,8 @@
+"""
+Author: Sudarshana Sharma
+Date: June, 2024
+This is the  main file for our Application
+"""
 from fastapi import FastAPI, Response, status
 from contextlib import asynccontextmanager
 from ml.model import load_model, predict_single
