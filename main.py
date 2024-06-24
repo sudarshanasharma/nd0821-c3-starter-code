@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Response, status
 from contextlib import asynccontextmanager
 from ml.model import load_model, predict_single
+from pydantic import BaseModel, Field
 import logging
-from pydantic import BaseModel
 import os
 import uvicorn
 
@@ -18,22 +18,23 @@ if "DYNO" in os.environ and os.path.isdir(".dvc"):
 
 
 class Data(BaseModel):
-    workclass: str = None
+    workclass: str
     education: str
-    marital_status: str
+    marital_status: str = Field(alias="marital-status")
     occupation: str
     relationship: str
     race: str
     sex: str
-    native_country: str
+    native_country: str = Field(alias="native-country")
     age: int
     fnlwgt: int
-    education_num: int
-    capital_gain: int
-    capital_loss: int
-    hours_per_week: int
+    education_num: int  = Field(alias="education-num")
+    capital_gain: int  = Field(alias="capital-gain")
+    capital_loss: int = Field(alias="capital-loss")
+    hours_per_week: int = Field(alias="hours-per-week")
 
     class Config:
+        allow_population_by_field_name = True,
         json_schema_extra = {
             "example": {
                 "workclass": "state_gov",
