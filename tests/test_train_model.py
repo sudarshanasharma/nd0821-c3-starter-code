@@ -3,6 +3,9 @@ from ml.model import train_model, compute_model_metrics, inference
 
 
 def test_cleaning(raw_data):
+    """
+    Test the function to clean the data
+    """
     cleaned_data, cat_cols, num_cols = clean_data(raw_data, "/tmp/census_cleaned.csv", "salary")
     assert cleaned_data.shape == raw_data.shape
     assert cleaned_data.isna().sum().sum() == 0
@@ -11,6 +14,9 @@ def test_cleaning(raw_data):
 
 
 def test_process_data(data, cat_features):
+    """
+    Test the function to process the data
+    """
     X_train, y_train, encoder, lb = process_data(data, categorical_features=cat_features, label="salary", training=True)
     assert X_train.shape == (32561, 105)
     assert y_train.shape == (32561,)
@@ -19,6 +25,9 @@ def test_process_data(data, cat_features):
 
 
 def test_train_model(dataset_split):
+    """
+    Test the function to train the model
+    """
     X_train = dataset_split[0]
     y_train = dataset_split[1]
     model = train_model(X_train, y_train)
@@ -26,6 +35,9 @@ def test_train_model(dataset_split):
 
 
 def test_compute_model_metrics(model, dataset_split):
+    """
+    Test the function to compute the model metrics
+    """
     y_pred = inference(model, dataset_split[2])
     precision, recall, fbeta = compute_model_metrics(dataset_split[3], y_pred)
     assert precision is not None
@@ -34,6 +46,9 @@ def test_compute_model_metrics(model, dataset_split):
 
 
 def test_inference(model, dataset_split):
+    """
+    Test the function to make prediction/inference
+    """
     X_test = dataset_split[2]
     y_pred = inference(model, X_test)
     assert y_pred is not None
