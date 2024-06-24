@@ -1,16 +1,16 @@
 import logging
-import pickle, os
+import os
+import pickle
 import pandas as pd
 from sklearn.metrics import fbeta_score, precision_score, recall_score
-from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
 
 from ml.data import process_data, clean_data
 
 logging.basicConfig(level=logging.INFO)
 
-def train_model(X_train, y_train, grid_search=False):
+
+def train_model(X_train, y_train):
     """
     Trains a machine learning model and returns it.
 
@@ -25,36 +25,13 @@ def train_model(X_train, y_train, grid_search=False):
     model
         Trained machine learning model.
     """
-    # TAKES TOO LONG
-    if grid_search:
-        param_grid = {'C': [0.1, 1, 10, 100, 1000],
-                      'gamma': [1, 0.1, 0.01, 0.001, 0.0001],
-                      'kernel': ['linear', 'rbf']}
-
-        grid = GridSearchCV(SVC(random_state=107, verbose=True),
-                            param_grid,
-                            scoring='accuracy',
-                            cv=10,
-                            refit=True,
-                            n_jobs=-1,
-                            verbose=3)
-
-        grid.fit(X_train, y_train)
-        print(f"Model's best score: {grid.best_score_}")
-        print(f"Model's best params: {grid.best_params_}")
-
-        best_model = grid.best_estimator_
-        best_model.fit(X_train, y_train)
-
-        return best_model
-    else:
-        model = RandomForestClassifier(
-            n_estimators=10,
-            max_depth=None,
-            min_samples_split=2,
-            random_state=0)
-        model.fit(X_train, y_train)
-        return model
+    model = RandomForestClassifier(
+        n_estimators=10,
+        max_depth=None,
+        min_samples_split=2,
+        random_state=0)
+    model.fit(X_train, y_train)
+    return model
 
 
 def compute_model_metrics(y, preds):
@@ -135,13 +112,13 @@ def load_model(model_dir):
     Returns:
         tuple: A tuple containing the loaded model object, encoder object, and labeler object.
     """
-    model_path = os.path.join(model_dir,'model.pkl')
+    model_path = os.path.join(model_dir, 'model.pkl')
     model = pickle.load(open(model_path, 'rb'))
 
-    encoder_path = os.path.join(model_dir,'encoder.pkl')
+    encoder_path = os.path.join(model_dir, 'encoder.pkl')
     encoder = pickle.load(open(encoder_path, 'rb'))
 
-    labeler_path = os.path.join(model_dir,'labeler.pkl')
+    labeler_path = os.path.join(model_dir, 'labeler.pkl')
     lb = pickle.load(open(labeler_path, 'rb'))
 
     return model, encoder, lb
@@ -202,6 +179,7 @@ def compute_slice_metrics(
             f.write(f"{key}: {value}")
             f.write("\n")
     return slice_metrics
+
 
 def predict_single(input_json, model_dir):
     """ Make a prediction using a trained model.

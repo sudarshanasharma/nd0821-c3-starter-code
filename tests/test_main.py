@@ -3,12 +3,20 @@ from main import app
 
 client = TestClient(app)
 
+
 def test_read_root():
+    """
+    Test response from endpoint /
+    """
     response = client.get("/")
     assert response.status_code == 200
     assert response.content == b'Welcome to Udacity Income Prediction API'
 
+
 def test_predict_api_negative(data):
+    """
+    Test negative response from the endpoint /predict
+    """
     sample = {
             "workclass": "state_gov",
             "education": "bachelors",
@@ -30,7 +38,11 @@ def test_predict_api_negative(data):
     assert response.status_code == 200
     assert response.text == 'The predicted income is: <=50k'
 
+
 def test_predict_api_positive(data):
+    """
+    Test positive response from the endpoint /predict
+    """
     sample = {
             "workclass": "state_gov",
             "education": "bachelors",
@@ -51,3 +63,12 @@ def test_predict_api_positive(data):
     response = client.post("/predict", json=sample)
     assert response.status_code == 200
     assert response.text == 'The predicted income is: >50k'
+
+
+def test_predict_api_invalid():
+    """
+    Test response for an Invalid request
+    """
+    data = {}
+    response = client.post("/predict", json=data)
+    assert response.status_code == 422

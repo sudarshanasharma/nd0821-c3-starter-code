@@ -6,7 +6,8 @@ This script is used to train a machine learning model
 # Add the necessary imports for the starter code.
 from sklearn.model_selection import train_test_split
 import pandas as pd
-from ml.model import *
+from ml.data import clean_data, process_data
+from ml.model import compute_model_metrics, compute_slice_metrics, inference, load_model, save_model, train_model
 import logging
 import os
 import warnings
@@ -18,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def main():
-    logging.info(12 * '*' + 'STARTED MODEL TRAINING' + 12 * '*')
+    logging.info(12 * "*" + "STARTED MODEL TRAINING" + 12 * "*")
     # Load data
     logging.info("Loading data...")
     data = pd.read_csv("data/census.csv")
@@ -49,15 +50,15 @@ def main():
 
     # if the model exists, load the model
     if os.path.isfile(os.path.join(MODEL_PATH, 'model.pkl')):
-        logging.info(f"A model already exists...")
+        logging.info("A model already exists...")
         model, encoder, lb = load_model(MODEL_PATH)
-        logging.info(f"model, encoder and labeler loaded")
+        logging.info("model, encoder and labeler loaded")
 
     else:
-        logging.info(f"A model does not exist... finding the best model...")
+        logging.info("A model does not exist... finding the best model...")
         model = train_model(X_train, y_train)
         save_model(model, MODEL_PATH, encoder, lb)
-        logging.info(f"Best model saved")
+        logging.info("Best model saved")
 
     # Evaluate the model on the test data.
     y_pred = inference(model, X_test)
@@ -67,10 +68,10 @@ def main():
     logging.info(f"Precision: {precision}, Recall: {recall}, Fbeta: {fbeta}")
 
     # compute slice_feature (feature = education) metrics
-    slice_metrics = compute_slice_metrics(
+    compute_slice_metrics(
         test, 'salary', cat_cols, 'education', model, encoder, lb)
 
-    logging.info(12 * '*' + 'FINISHED MODEL TRAINING ' + 12 * '*')
+    logging.info(12 * "*" + "FINISHED MODEL TRAINING" + 12 * "*")
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ import os
 
 from ml.data import process_data
 
+
 @pytest.fixture(scope='session')
 def raw_data():
     print(os.getcwd())
@@ -13,7 +14,6 @@ def raw_data():
     df = pd.read_csv(data_path)
     print(df)
     return df
-
 
 
 @pytest.fixture(scope='session')
@@ -42,6 +42,7 @@ def cat_features():
                     "native-country"]
     return cat_features
 
+
 @pytest.fixture(scope="session")
 def num_features():
     """
@@ -56,6 +57,7 @@ def num_features():
         'hours-per-week'
     ]
     return num_features
+
 
 @pytest.fixture(scope="session")
 def features():

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body, Response, status
+from fastapi import FastAPI, Response, status
 from contextlib import asynccontextmanager
 from ml.model import load_model, predict_single
 import logging
@@ -6,12 +6,13 @@ from pydantic import BaseModel
 import os
 
 logging.basicConfig(level=logging.INFO)
-MODEL_PATH ="./model"
+MODEL_PATH = "./model"
 if "DYNO" in os.environ and os.path.isdir(".dvc"):
     os.system("dvc config core.no_scm true")
     if os.system("dvc pull") != 0:
         exit("dvc pull failed")
     os.system("rm -r .dvc .apt/usr/lib/dvc")
+
 
 class Data(BaseModel):
     workclass: str = None
@@ -49,26 +50,20 @@ class Data(BaseModel):
             }
         }
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logging.info("Loading model")
     global model, encoder, lb
     # if the model exists, load the model
-    print(os.path.isfile(os.path.join(MODEL_PATH,'model.pkl')))
-    if os.path.isfile(os.path.join(MODEL_PATH,'model.pkl')):
+    print(os.path.isfile(os.path.join(MODEL_PATH, 'model.pkl')))
+    if os.path.isfile(os.path.join(MODEL_PATH, 'model.pkl')):
         model, encoder, lb = load_model(MODEL_PATH)
     logging.info("Model loaded")
     yield
 
 # Instantiate the app.
 app = FastAPI(lifespan=lifespan)
-
-#@app.on_event("startup")
-#async def startup_event():
-#    logging.info("Loading model")
-#    global model, encoder, lb
-#    model, encoder, lb = load_model('./model')
-#    logging.info("Model loaded")
 
 
 # welcome message on the root

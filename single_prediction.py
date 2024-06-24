@@ -1,48 +1,7 @@
-from ml.model import inference, predict_single
-from ml.model import load_model
-from ml.data import process_data, clean_data
-import pandas as pd
+from ml.model import predict_single
 import logging
 
 logging.basicConfig(level=logging.INFO)
-
-
-# Function for predicting on a single json example.
-def single_prediction(input_json, model_dir):
-    """ Make a prediction using a trained model.
-
-    Inputs
-    ------
-    model : ???
-        Trained machine learning model.
-    input_json : dict
-        Input data in json format.
-    Returns
-    -------
-    preds : np.array
-        Predictions from the model.
-    """
-    # Convert the input to a dataframe with same data types as training data.
-    input_df = pd.DataFrame(dict(input_json), index=[0])
-    logging.info(f"input_df: {input_df}")
-
-    # clean data
-    cleaned_df, cat_cols, num_cols = clean_data(
-        input_df, "data/census_cleaned.csv", "salary", test=True)
-
-    # load model, encoder, and lb and predict on single json instance
-    model, encoder, lb = load_model(model_dir)
-
-    # process data
-    X, _, _, _ = process_data(
-        cleaned_df, cat_cols, training=False, encoder=encoder, lb=lb)
-
-    # predict
-    preds = inference(model, X)
-    lbls = lb.inverse_transform(preds)
-
-    return lbls
-
 
 if __name__ == "__main__":
     single_json = {
