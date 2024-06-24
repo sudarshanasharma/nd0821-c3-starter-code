@@ -35,7 +35,7 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: setup DVC
-      uses: iterative/setup-dvc@v1
+      uses: iterative/setup-dvc@v2
     - name: dvc pull
       run: |
         dvc remote add -df  datastore s3://udacity-sudarshana-mlops-4
