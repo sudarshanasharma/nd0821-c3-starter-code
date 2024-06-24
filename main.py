@@ -9,9 +9,10 @@ logging.basicConfig(level=logging.INFO)
 MODEL_PATH = "./model"
 if "DYNO" in os.environ and os.path.isdir(".dvc"):
     os.system("dvc config core.no_scm true")
-    if os.system("dvc pull") != 0:
+    os.system("dvc remote add -df datastore s3://udacity-sudarshana-mlops-4")
+    if os.system("dvc pull -f") != 0:
         exit("dvc pull failed")
-    os.system("rm -r .dvc .apt/usr/lib/dvc")
+    os.system("rm -rf .dvc .apt/usr/lib/dvc")
 
 
 class Data(BaseModel):
