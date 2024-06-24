@@ -4,6 +4,8 @@ from ml.model import load_model, predict_single
 import logging
 from pydantic import BaseModel
 import os
+import uvicorn
+
 
 logging.basicConfig(level=logging.INFO)
 MODEL_PATH = "./model"
@@ -102,3 +104,7 @@ def predict(data: Data):
         )
 
         return response
+
+
+ if __name__ == "__main__":
+     uvicorn.run(app, host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
